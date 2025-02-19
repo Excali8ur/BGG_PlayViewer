@@ -4,8 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BGG Play Viewer</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+    <script src="/js/getplays.js"></script>
 </head>
 <body>
-    Testing options for a 'Play Viewer' to show all logged plays from <a href="http://www.boardgamegeek.com" target="_blank">Board Game Geek</a>
+    <div>
+    Trying options for a 'Play Viewer' to show all logged plays from <a href="http://www.boardgamegeek.com" target="_blank">Board Game Geek</a>
+    </div>
+    <div>
+        Testing D3.js</br>
+    <script>
+/*
+        let width = Math.random() * 200 + 200;
+        let height = Math.random() * 200 + 200;
+
+        let svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .style("background", "silver")
+
+        let randomAmount = Math.random() * 30;
+        let data = d3.range(randomAmount).map(() => Math.random() * 100);
+
+        let color = d3.scaleLinear().range(["yellow", "purple"])
+        color.domain(d3.extent(data))
+
+        svg.selectAll("*").remove();
+        let update = svg.selectAll("rect").data(data);
+        let enter = update.enter()
+            .append("rect")
+            .attr("x", (d, i, nodes) => i * width / (nodes.length))
+            .attr("y", 0)
+            .attr("width", (d, i, nodes) => width / (nodes.length))
+            .attr("height", height)
+            .style("fill", d => color(d))
+*/
+console.log("Script Started")
+/*
+//d3.xml("https://boardgamegeek.com//xmlapi2/plays?username=Excali8ur", function(error, data) {
+d3.xml("plays.xml", function(error, data) {
+    console.log("...")
+    console.log(data)
+    console.log("...")
+    d3.select("body")
+        .selectAll("p")
+        .data(data)
+        .enter()
+        .append("p")
+        .text("Test" + function(d) {
+            console.log(d)
+            return d.name + ", " + d.location;
+        });
+
+});
+*/
+    //d3.xml("https://boardgamegeek.com//xmlapi2/plays?username=Excali8ur").then(function(data) {
+    d3.xml("plays.xml").then(function(data) {
+        console.log(data)
+        // data is an XML document, parse document
+        data = [].map.call(data.querySelectorAll("play"), function(play) {
+        //console.log(play)            
+        //console.log(play.getAttribute("date"))
+
+        let item = play.querySelector("item");
+        let players = play.querySelectorAll("player")
+        let playerNames = []
+        players.forEach(element => {
+            playerNames.push(" "+element.getAttribute("name"))
+        });
+            
+        //console.log(players)
+            return {
+                gameName: item.getAttribute("name"),
+                date: play.getAttribute("date"),
+                players: playerNames                  
+            }; 
+        });
+        console.log(data);
+
+        d3.select("body")
+            .selectAll("p")
+            .data(data)
+            .enter()
+            .append("div")
+            .text(function(d) {
+                console.log(d)
+                return d.date +", "+ d.gameName +", "+ d.players;
+            });
+        
+        console.log("Script Ended")
+
+    });    
+    console.log("Script Ended")
+    </script>
+    </div>
+
+    
 </body>
 </html>
